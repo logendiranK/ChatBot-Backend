@@ -1,27 +1,24 @@
-# Use base Ollama image
-FROM ollama/ollama:latest
+FROM ubuntu:22.04
 
-# Install Node.js + npm
-RUN apt-get update && \
-    apt-get install -y nodejs npm
+# Install curl
+RUN apt update && apt install -y curl
 
-# Create app directory
+# Install Ollama
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and lock file
-COPY package*.json ./
-
-# Install backend dependencies
-RUN npm install
-
-# Copy rest of backend files
+# Copy project
 COPY . .
 
-# Pull your AI model
-RUN ollama pull llama3
+# Install node
+RUN apt install -y nodejs npm
+RUN npm install
 
-# Expose backend port
+# Expose ports
 EXPOSE 5000
+EXPOSE 11434
 
-# Run both Ollama and Node backend
-CMD ollama serve & node server.js
+# Start ollama server first, then pull model, then start backend
+CMD ollama serve & sleep 5 && ollama pull llama3 && node server.js

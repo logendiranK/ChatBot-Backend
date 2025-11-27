@@ -16,14 +16,13 @@ FunnyBot:
     await ChatMessage.create({ sender: "user", text: message });
 
     const response = await axios.post(
-  "http://localhost:11434/api/generate",
+  "http://127.0.0.1:11434/api/generate",
   {
     model: "llama3",
     prompt: funnyPrompt,
-    stream: false  
+    stream: false
   }
 );
-
 
 
     const reply = response.data.response;
